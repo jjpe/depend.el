@@ -10,7 +10,7 @@
   "The semantic version of this depend.el release.")
 
 (defvar depend/bin-semver "0.1.0"
-  "The semantic version of the `download' executable in bin/.")
+  "The semantic version of the `bin/download-*' executables that will be used.")
 
 (defvar depend/root-directory (file-name-directory load-file-name)
   "The depend.el root directory.")
