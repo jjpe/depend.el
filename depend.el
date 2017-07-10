@@ -13,6 +13,9 @@
 (defvar depend/root-directory (file-name-directory load-file-name)
   "The depend.el root directory.")
 
+(defvar load-path nil)
+(add-to-list 'load-path (directory-file-name depend/root-directory))
+
 (defvar depend/os
   (pcase system-type
     ('darwin       "osx")
