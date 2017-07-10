@@ -40,9 +40,10 @@
 
 (defun depend/download (url file-path)
   "Download a resource from URL to FILE-PATH."
-  (let* ((bin (if depend/debug
-                  (concat "bin/download-" depend/bin-semver "-" depend/os "-dbg ")
-                (concat "bin/download-" depend/bin-semver "-" depend/os " ")))
+  (let* ((stem (concat depend/root-directory "/bin/download-" depend/bin-semver))
+         (bin (if depend/debug
+                  (concat stem "-" depend/os "-dbg ")
+                (concat stem "-" depend/os " ")))
          (command (concat depend/root-directory bin
                           "--from " url " "
                           "--to " file-path " "
