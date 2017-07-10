@@ -12,6 +12,8 @@
 (defvar depend/bin-semver "0.1.0"
   "The semantic version of the `bin/download-*' executables that will be used.")
 
+(defvar depend/buffer-name "*depend*")
+
 (defvar depend/root-directory (file-name-directory load-file-name)
   "The depend.el root directory.")
 
@@ -30,8 +32,8 @@
   "Set to t if this code should run in debug mode.  Set to nil otherwise.")
 
 (defun depend/log (msg &rest args)
-  "log MSG to the *depend* buffer."
-  (with-current-buffer "*depend*"
+  "log MSG to the `depend/buffer-name' buffer."
+  (with-current-buffer depend/buffer-name
     (goto-char (point-max))
     (insert-string (apply #'format msg args))
     (insert-string "\n")))
@@ -47,7 +49,7 @@
                           ;; TODO: This is poor man's error handling
                           ;;            and should be improved:
                           "|| echo " file-path " already exists"))
-         (proc-name "*depend*")
+         (proc-name depend/buffer-name)
          (buffer-name proc-name))
     (unless (process-live-p (get-process proc-name))
       (start-process-shell-command proc-name buffer-name command))))
@@ -56,7 +58,7 @@
   "Make FILE-PATH executable."
   (let* ((command (concat "chmod ug+x " file-path " "
                           "&& echo \"Made " file-path " executable\" "))
-         (proc-name "*depend*")
+         (proc-name depend/buffer-name)
          (buffer-name proc-name))
     (unless (process-live-p (get-process proc-name))
       (start-process-shell-command proc-name buffer-name command))))
@@ -64,7 +66,7 @@
 (defun depend/extract-zip (zip-file-name target-dir-path)
   "Extract an archive, located at ZIP-FILE-NAME, to a TARGET-DIR-PATH.
 If the TARGET-DIR-PATH already exists, skip the extraction."
-  (let* ((buffer-name "*depend*")
+  (let* ((buffer-name depend/buffer-name)
          (buffer (get-buffer-create buffer-name)))
     (with-current-buffer buffer
       (goto-char (point-max))
