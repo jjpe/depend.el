@@ -40,39 +40,36 @@
 
 (defun depend/download (url file-path)
   "Download a resource from URL to FILE-PATH."
-  (let* ((stem (concat depend/root-directory "/bin/download-" depend/bin-semver))
+  (let* ((stem (concat depend/root-directory "bin/download-" depend/bin-semver))
          (bin (if depend/debug
-                  (concat stem "-" depend/os "-dbg ")
-                (concat stem "-" depend/os " ")))
-         (command (concat depend/root-directory bin
-                          "--from " url " "
-                          "--to " file-path " "
-                          ;; TODO: This is poor man's error handling
-                          ;;            and should be improved:
-                          "|| echo " file-path " already exists"))
+                  (concat stem "-" depend/os "-dbg")
+                (concat stem "-" depend/os)))
          (proc-name depend/buffer-name))
-    (unless (process-live-p (get-process proc-name))
-      (start-process-shell-command proc-name depend/buffer-name command))))
+    (call-process bin nil (get-buffer-create "*depend*") t
+                  "--from" url
+                  "--to" file-path)))
 
 (defun depend/make-executable (file-path)
   "Make FILE-PATH executable."
-  (let* ((command (concat "chmod ug+x " file-path " "
-                          "&& echo \"Made " file-path " executable\" "))
-         (proc-name depend/buffer-name))
+  (let* ((proc-name depend/buffer-name))
     (unless (process-live-p (get-process proc-name))
-      (start-process-shell-command proc-name depend/buffer-name command))))
+      (call-process "chmod" nil (get-buffer-create "*depend*") t
+                    "ug+x"
+                    file-path)
+      (depend/log "Made %s executable" file-path))))
 
 (defun depend/extract-zip (zip-file-name target-dir-path)
   "Extract an archive, located at ZIP-FILE-NAME, to a TARGET-DIR-PATH.
 If the TARGET-DIR-PATH already exists, skip the extraction."
-  (let ((buffer (get-buffer-create depend/buffer-name)))
+  (let ((buffer (get-buffer-create depend/buffer-name))
+        (command (concat "unzip " zip-file-name " -d " target-dir-path)))
     (with-current-buffer buffer
       (goto-char (point-max))
       (if (file-exists-p target-dir-path)
           (depend/log "using cached dir @ %s" target-dir-path)
         (progn
-          (shell-command (concat "unzip " zip-file-name " -d " target-dir-path)
-                         buffer buffer)
+          (call-process "unzip" nil (get-buffer-create "*depend*") t
+                        zip-file-name "-d" target-dir-path)
           (depend/log "extracted dir @ %s" target-dir-path))))))
 
 (provide 'depend)
