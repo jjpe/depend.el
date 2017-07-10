@@ -4,7 +4,7 @@
 
 (require 'dash) ;; threading macros
 
-(defvar depend/semver "0.1.0"
+(defvar depend/semver "0.2.0"
   "The semantic version of this depend.el release.")
 
 (defvar depend/bin-semver "0.1.0"
