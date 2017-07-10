@@ -61,19 +61,19 @@
     (unless (process-live-p (get-process proc-name))
       (start-process-shell-command proc-name buffer-name command))))
 
-(defun depend/extract-zip (zip-file-name target-path)
-  "Extract an archive, located at ZIP-FILE-NAME, to a TARGET-PATH.
-If the TARGET-PATH already exists, skip the extraction."
+(defun depend/extract-zip (zip-file-name target-dir-path)
+  "Extract an archive, located at ZIP-FILE-NAME, to a TARGET-DIR-PATH.
+If the TARGET-DIR-PATH already exists, skip the extraction."
   (let* ((buffer-name "*depend*")
          (buffer (get-buffer-create buffer-name)))
     (with-current-buffer buffer
       (goto-char (point-max))
-      (if (file-exists-p target-path)
-          (depend/log "using cached dir @ %s" target-path)
+      (if (file-exists-p target-dir-path)
+          (depend/log "using cached dir @ %s" target-dir-path)
         (progn
-          (shell-command (concat "unzip " zip-file-name " -d " target-path)
+          (shell-command (concat "unzip " zip-file-name " -d " target-dir-path)
                          buffer buffer)
-          (depend/log "extracted dir @ %s" target-path))))))
+          (depend/log "extracted dir @ %s" target-dir-path))))))
 
 (provide 'depend)
 ;;; depend.el ends here
