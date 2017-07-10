@@ -33,7 +33,7 @@
 
 (defun depend/log (msg &rest args)
   "log MSG to the `depend/buffer-name' buffer."
-  (with-current-buffer depend/buffer-name
+  (with-current-buffer (get-buffer-create depend/buffer-name)
     (goto-char (point-max))
     (insert-string (apply #'format msg args))
     (insert-string "\n")))
@@ -49,25 +49,22 @@
                           ;; TODO: This is poor man's error handling
                           ;;            and should be improved:
                           "|| echo " file-path " already exists"))
-         (proc-name depend/buffer-name)
-         (buffer-name proc-name))
+         (proc-name depend/buffer-name))
     (unless (process-live-p (get-process proc-name))
-      (start-process-shell-command proc-name buffer-name command))))
+      (start-process-shell-command proc-name depend/buffer-name command))))
 
 (defun depend/make-executable (file-path)
   "Make FILE-PATH executable."
   (let* ((command (concat "chmod ug+x " file-path " "
                           "&& echo \"Made " file-path " executable\" "))
-         (proc-name depend/buffer-name)
-         (buffer-name proc-name))
+         (proc-name depend/buffer-name))
     (unless (process-live-p (get-process proc-name))
-      (start-process-shell-command proc-name buffer-name command))))
+      (start-process-shell-command proc-name depend/buffer-name command))))
 
 (defun depend/extract-zip (zip-file-name target-dir-path)
   "Extract an archive, located at ZIP-FILE-NAME, to a TARGET-DIR-PATH.
 If the TARGET-DIR-PATH already exists, skip the extraction."
-  (let* ((buffer-name depend/buffer-name)
-         (buffer (get-buffer-create buffer-name)))
+  (let ((buffer (get-buffer-create depend/buffer-name)))
     (with-current-buffer buffer
       (goto-char (point-max))
       (if (file-exists-p target-dir-path)
