@@ -7,6 +7,9 @@
 (defvar depend/semver "0.1.0"
   "The semantic version of this depend.el release.")
 
+(defvar depend/bin-semver "0.1.0"
+  "The semantic version of the `download' executable in bin/.")
+
 (defvar depend/root-directory (file-name-directory load-file-name)
   "The depend.el root directory.")
 
@@ -24,14 +27,14 @@
 (defun depend/download (url file-path)
   "Download a resource from URL to FILE-PATH."
   (let* ((bin (if depend/debug
-                  (concat "bin/download-" depend/semver "-" depend/os "-dbg ")
-                (concat "bin/download-" depend/semver "-" depend/os " ")))
+                  (concat "bin/download-" depend/bin-semver "-" depend/os "-dbg ")
+                (concat "bin/download-" depend/bin-semver "-" depend/os " ")))
          (command (concat bin
                           "--from " url " "
                           "--to " file-path " "
                           ;; TODO: This is poor man's error handling
                           ;;            and should be improved:
-                          "|| echo " file-path " already exists "))
+                          "|| echo " file-path " already exists"))
          (proc-name "*depend*")
          (buffer-name proc-name))
     (unless (process-live-p (get-process proc-name))
@@ -44,13 +47,6 @@
          (buffer-name proc-name))
     (unless (process-live-p (get-process proc-name))
       (start-process-shell-command proc-name buffer-name command))))
-
-;; (depend/download
-;;  "https://github.com/jjpe/amplify/releases/download/0.14.0/amplify-0.14.0-osx-dbg"
-;;  (concat depend/root-directory "bin/amplify-0.14.0-osx-dbg"))
-
-;; (depend/make-executable
-;;  (concat depend/root-directory "bin/amplify-0.14.0-osx-dbg"))
 
 ;;; Code:
 
