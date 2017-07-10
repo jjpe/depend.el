@@ -29,7 +29,7 @@
   (let* ((bin (if depend/debug
                   (concat "bin/download-" depend/bin-semver "-" depend/os "-dbg ")
                 (concat "bin/download-" depend/bin-semver "-" depend/os " ")))
-         (command (concat bin
+         (command (concat depend/root-directory bin
                           "--from " url " "
                           "--to " file-path " "
                           ;; TODO: This is poor man's error handling
