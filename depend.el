@@ -2,6 +2,8 @@
 
 ;;; Commentary:
 
+;;; Code:
+
 (require 'dash) ;; threading macros
 
 (defvar depend/semver "0.2.0"
@@ -26,6 +28,13 @@
 
 (defvar depend/debug t
   "Set to t if this code should run in debug mode.  Set to nil otherwise.")
+
+(defun depend/log (msg &rest args)
+  "log MSG to the *depend* buffer."
+  (with-current-buffer "*depend*"
+    (goto-char (point-max))
+    (insert-string (apply #'format msg args))
+    (insert-string "\n")))
 
 (defun depend/download (url file-path)
   "Download a resource from URL to FILE-PATH."
@@ -52,7 +61,6 @@
     (unless (process-live-p (get-process proc-name))
       (start-process-shell-command proc-name buffer-name command))))
 
-;;; Code:
 
 (provide 'depend)
 ;;; depend.el ends here
