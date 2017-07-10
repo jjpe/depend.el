@@ -42,7 +42,8 @@
 
 (defun depend/make-executable (file-path)
   "Make FILE-PATH executable."
-  (let* ((command (concat "chmod ug+x " file-path))
+  (let* ((command (concat "chmod ug+x " file-path " "
+                          "&& echo \"Made " file-path " executable\" "))
          (proc-name "*depend*")
          (buffer-name proc-name))
     (unless (process-live-p (get-process proc-name))
