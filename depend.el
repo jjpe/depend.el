@@ -109,10 +109,8 @@ If the TARGET-DIR-PATH already exists, skip the extraction."
         (command (concat "unzip " zip-file-path " -d " target-dir-path)))
     (with-current-buffer buffer
       (goto-char (point-max))
-      (if (file-exists-p target-dir-path)
-          (depend/log "Using cached dir @ %s" target-dir-path)
-        (and (depend/command-bool "unzip" zip-file-path "-d" target-dir-path)
-             (depend/log "Extracted dir @ %s" target-dir-path))))))
+      (and (depend/command-bool "unzip" zip-file-path "-d" target-dir-path)
+           (depend/log "Extracted dir @ %s" target-dir-path)))))
 
 (provide 'depend)
 ;;; depend.el ends here
