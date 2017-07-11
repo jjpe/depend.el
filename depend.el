@@ -29,7 +29,10 @@
   "A tag representing the current operating system.")
 
 (defvar depend/debug t
-  "Set to t if this code should run in debug mode.  Set to nil otherwise.")
+  "Set to t if this code should run in debug mode.
+Set to nil otherwise, which means the code will run in release mode.
+Release mode means the code will use the bins in `depend/root-directory'/bin/.
+In debug mode, however, the `-dbg' variants of those bins will be used.")
 
 (defun depend/log (msg &rest args)
   "Log formatted MSG (including any ARGS) to the `depend/buffer-name' buffer."
