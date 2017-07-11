@@ -40,37 +40,40 @@
 
 (defun depend/download (url file-path)
   "Download a resource from URL to FILE-PATH."
-  (let* ((stem (concat depend/root-directory "bin/download-" depend/bin-semver))
-         (bin (if depend/debug
-                  (concat stem "-" depend/os "-dbg")
-                (concat stem "-" depend/os)))
-         (proc-name depend/buffer-name))
-    (call-process bin nil (get-buffer-create "*depend*") t
-                  "--from" url
-                  "--to" file-path)))
+  (let* ((stem (concat depend/root-directory "bin/"
+                       "download-" depend/bin-semver "-" depend/os))
+         (bin (if depend/debug  (concat stem "-dbg")  stem))
+         (proc-name depend/buffer-name)
+         (infile nil)
+         (destination (get-buffer-create depend/buffer-name))
+         (display t))
+    (call-process bin infile destination display "--from" url "--to" file-path)))
 
 (defun depend/make-executable (file-path)
   "Make FILE-PATH executable."
-  (let* ((proc-name depend/buffer-name))
+  (let* ((proc-name depend/buffer-name)
+         (infile nil)
+         (destination (get-buffer-create depend/buffer-name))
+         (display t))
     (unless (process-live-p (get-process proc-name))
-      (call-process "chmod" nil (get-buffer-create "*depend*") t
-                    "ug+x"
-                    file-path)
+      (call-process "chmod" infile destination display "ug+x" file-path)
       (depend/log "Made %s executable" file-path))))
 
-(defun depend/extract-zip (zip-file-name target-dir-path)
-  "Extract an archive, located at ZIP-FILE-NAME, to a TARGET-DIR-PATH.
+(defun depend/extract-zip (zip-file-path target-dir-path)
+  "Extract an archive, located at ZIP-FILE-PATH, to a TARGET-DIR-PATH.
 If the TARGET-DIR-PATH already exists, skip the extraction."
   (let ((buffer (get-buffer-create depend/buffer-name))
-        (command (concat "unzip " zip-file-name " -d " target-dir-path)))
+        (command (concat "unzip " zip-file-path " -d " target-dir-path))
+        (infile nil)
+        (destination (get-buffer-create depend/buffer-name))
+        (display t))
     (with-current-buffer buffer
       (goto-char (point-max))
       (if (file-exists-p target-dir-path)
           (depend/log "using cached dir @ %s" target-dir-path)
-        (progn
-          (call-process "unzip" nil (get-buffer-create "*depend*") t
-                        zip-file-name "-d" target-dir-path)
-          (depend/log "extracted dir @ %s" target-dir-path))))))
+        (progn (call-process "unzip" infile destination display
+                             zip-file-path "-d" target-dir-path)
+               (depend/log "extracted dir @ %s" target-dir-path))))))
 
 (provide 'depend)
 ;;; depend.el ends here
