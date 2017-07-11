@@ -45,14 +45,6 @@ In debug mode, however, the `-dbg' variants of those bins will be used.")
       (insert-string "\n")
       (goto-char (point-max)))))
 
-(defun depend/command-int (cmd &rest args)
-  "Execute a `CMD' with any `ARGS', and return the exit code as an integer.
-Additionally, redirect all output to the `depend/buffer-name' buffer."
-  (let* ((proc-name depend/buffer-name)
-         (infile nil)
-         (destination (get-buffer-create depend/buffer-name))
-         (display t))
-    (apply #'call-process cmd infile destination display args)))
 
 (defun depend/command-bool (cmd &rest args)
   "Execute a `CMD' with any `ARGS', and return the success status as a boolean.
