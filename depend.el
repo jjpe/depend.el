@@ -32,7 +32,7 @@
   "Set to t if this code should run in debug mode.  Set to nil otherwise.")
 
 (defun depend/log (msg &rest args)
-  "log MSG to the `depend/buffer-name' buffer."
+  "Log formatted MSG (including any ARGS) to the `depend/buffer-name' buffer."
   (with-current-buffer (get-buffer-create depend/buffer-name)
     (goto-char (point-max))
     (insert-string (apply #'format msg args))
