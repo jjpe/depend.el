@@ -34,6 +34,8 @@ Set to nil otherwise, which means the code will run in release mode.
 Release mode means the code will use the bins in `depend/root-directory'/bin/.
 In debug mode, however, the `-dbg' variants of those bins will be used.")
 
+
+
 (defun depend/log (msg &rest args)
   "Log formatted MSG (including any ARGS) to the `depend/buffer-name' buffer."
   (let ((buffer (get-buffer-create depend/buffer-name)))
@@ -44,6 +46,30 @@ In debug mode, however, the `-dbg' variants of those bins will be used.")
       (insert-string (apply #'format msg args))
       (insert-string "\n")
       (goto-char (point-max)))))
+
+
+
+(defun depend/write-dependencies (depend-file dependencies)
+  "Open DEPEND-FILE and write DEPENDENCIES to it.
+The DEPENDENCIES must be in the form of an associative list.
+Each entry in the list must be a (NAME . SEMVER) cons where:
+  * NAME is a string identifier e.g. 'amplify-mode
+  * SEMVER is the semantic version e.g. \"0.14.4\""
+  (with-temp-buffer
+    (insert (prin1-to-string dependencies))
+    (write-file depend-file)))
+
+(defun depend/read-dependencies (depend-file)
+  "Read dependencies from DEPEND-FILE and return them as an associative list.
+Each entry in the list must be a (NAME . SEMVER) cons where:
+  * NAME is a string identifier e.g. \"amplify-mode\"
+  * SEMVER is the semantic version e.g. \"0.14.4\""
+  (with-temp-buffer
+    (insert-file-contents depend-file)
+    (-> (buffer-string)
+        (read-from-string)
+        (car))))
+
 
 
 (defun depend/command-bool (cmd &rest args)
