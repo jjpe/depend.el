@@ -128,5 +128,10 @@ If the TARGET-DIR-PATH already exists, skip the extraction."
       (and (depend/command-bool "unzip" zip-file-path "-d" target-dir-path)
            (depend/log "Extracted \"%s\" to \"%s\"" zip-file-path target-dir-path)))))
 
+(defun depend/wait-for-resource (dir-path)
+  "Block until the resource @ DIR-PATH exists on the file system."
+  (while (not (file-exists-p dir-path))
+    nil))
+
 (provide 'depend)
 ;;; depend.el ends here
