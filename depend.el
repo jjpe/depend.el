@@ -110,7 +110,7 @@ If the TARGET-DIR-PATH already exists, skip the extraction."
     (with-current-buffer buffer
       (goto-char (point-max))
       (and (depend/command-bool "unzip" zip-file-path "-d" target-dir-path)
-           (depend/log "Extracted dir @ %s" target-dir-path)))))
+           (depend/log "Extracted \"%s\" to \"%s\"" zip-file-path target-dir-path)))))
 
 (provide 'depend)
 ;;; depend.el ends here
