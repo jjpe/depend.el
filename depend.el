@@ -71,6 +71,16 @@ Each entry in the list must be a (NAME . SEMVER) cons where:
         (car))))
 
 
+(cl-defun depend/query-github-release (author project)
+  "Query GitHub for the latest release of a PROJECT by AUTHOR.
+This function uses the GitHub REST API v3."
+  (let ((url (format "https://api.github.com/repos/%s/%s/releases/latest"
+                     author project)))
+    (with-current-buffer (url-retrieve-synchronously url)
+      (->> (json-read)
+           (assoc 'tag_name)
+           cdr))))
+
 
 (defun depend/command-bool (cmd &rest args)
   "Execute a `CMD' with any `ARGS', and return the success status as a boolean.
