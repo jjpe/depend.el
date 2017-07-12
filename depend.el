@@ -12,7 +12,7 @@
 (require 'dash) ;; threading macros
 (require 'json)
 
-(defvar depend/semver "0.5.4"
+(defvar depend/semver "0.5.5"
   "The semantic version of this depend.el release.")
 
 (defvar depend/bin-semver "0.1.0"
@@ -130,6 +130,7 @@ If the TARGET-DIR-PATH already exists, skip the extraction."
 
 (defun depend/wait-for-resource (dir-path)
   "Block until the resource @ DIR-PATH exists on the file system."
+  (depend/log "Waiting for resource @ %s" dir-path)
   (while (not (file-exists-p dir-path))
     nil))
 
